@@ -1,37 +1,33 @@
 "use client";
 
-import ActionCard from "@/components/ActionCard";
-import { QUICK_ACTIONS } from "@/constants";
-import { useUserRole } from "@/hooks/useUserRole";
-import { useQuery } from "convex/react";
 import { useState } from "react";
-import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { Loader2Icon } from "lucide-react";
+import { api } from "../../../../convex/_generated/api";
+import { useUserRole } from "@/hooks/useUserRole";
+import { QUICK_ACTIONS } from "@/constants";
+import ActionCard from "@/components/ActionCard";
 import MeetingModal from "@/components/MeetingModal";
 import LoaderUI from "@/components/LoaderUI";
-import { Loader2Icon } from "lucide-react";
 import MeetingCard from "@/components/MeetingCard";
 
 export default function Home() {
   const router = useRouter();
-
   const { isInterviewer, isCandidate, isLoading } = useUserRole();
-  const interviews = useQuery(api.interviews.getMyInterviews);
+  const { data: interviews, status } = useQuery(api.interviews.getMyInterviews);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<"start" | "join">();
 
   const handleQuickAction = (title: string) => {
-    switch (title) {
-      case "New Call":
-        setModalType("start");
-        setShowModal(true);
-        break;
-      case "Join Interview":
-        setModalType("join");
-        setShowModal(true);
-        break;
-      default:
-        router.push(`/${title.toLowerCase()}`);
+    if (title === "New Call") {
+      setModalType("start");
+      setShowModal(true);
+    } else if (title === "Join Interview") {
+      setModalType("join");
+      setShowModal(true);
+    } else {
+      router.push(`/${title.toLowerCase()}`);
     }
   };
 
@@ -46,8 +42,8 @@ export default function Home() {
         </h1>
         <p className="text-muted-foreground mt-2">
           {isInterviewer
-            ? "Manage your interviews and review candidates effectively"
-            : "Access your upcoming interviews and preparations"}
+            ? "Manage your interviews and review candidates effectively."
+            : "Access your upcoming interviews and preparations."}
         </p>
       </div>
 
@@ -55,11 +51,7 @@ export default function Home() {
         <>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {QUICK_ACTIONS.map((action) => (
-              <ActionCard
-                key={action.title}
-                action={action}
-                onClick={() => handleQuickAction(action.title)}
-              />
+              <ActionCard key={action.title} action={action} onClick={() => handleQuickAction(action.title)} />
             ))}
           </div>
 
@@ -74,24 +66,34 @@ export default function Home() {
         <>
           <div>
             <h1 className="text-3xl font-bold">Your Interviews</h1>
-            <p className="text-muted-foreground mt-1">View and join your scheduled interviews</p>
+            <p className="text-muted-foreground mt-1">View and join your scheduled interviews.</p>
           </div>
 
           <div className="mt-8">
-            {interviews === undefined ? (
-              <div className="flex justify-center py-12">
+            {status === "loading" && (
+              <div className="flex justify-center py-12" aria-live="polite">
                 <Loader2Icon className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
-            ) : interviews.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {interviews.map((interview) => (
-                  <MeetingCard key={interview._id} interview={interview} />
-                ))}
+            )}
+
+            {status === "error" && (
+              <div className="text-center py-12 text-red-500">
+                Failed to load interviews. Please try again.
               </div>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                You have no scheduled interviews at the moment
-              </div>
+            )}
+
+            {status === "success" && (
+              <>
+                {interviews?.length > 0 ? (
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {interviews.map((interview) => (
+                      <MeetingCard key={interview._id} interview={interview} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">You have no scheduled interviews at the moment.</div>
+                )}
+              </>
             )}
           </div>
         </>
