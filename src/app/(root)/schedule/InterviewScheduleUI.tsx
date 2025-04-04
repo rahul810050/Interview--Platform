@@ -136,7 +136,7 @@ function InterviewScheduleUI() {
       <div className="flex items-center justify-between">
         {/* HEADER INFO */}
         <div>
-          <h1 className="text-3xl font-bold">Interviews</h1>
+          <h1 className="text-3xl text-teal-500 font-bold">Interviews</h1>
           <p className="text-muted-foreground mt-1">Schedule and manage interviews</p>
         </div>
 

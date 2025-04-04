@@ -19,8 +19,8 @@ function MeetingCard({ interview }: { interview: Interview }) {
     <Card>
       <CardHeader className="space-y-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CalendarIcon className="h-4 w-4" />
+          <div className="flex items-center text-teal-500 gap-2 text-sm text-muted-foreground">
+            <CalendarIcon className="h-4 w-4 " />
             {formattedDate}
           </div>
 
