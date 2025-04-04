@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://climbing-cattle-3.clerk.accounts.dev/",
+      domain: "https://rare-oriole-2.clerk.accounts.dev/",
       applicationID: "convex",
     },
   ],

@@ -3,8 +3,8 @@ import { v } from "convex/values";
 
 export const getAllInterviews = query({
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
+    // const identity = await ctx.auth.getUserIdentity();
+    // if (!identity) throw new Error("Unauthorized");
 
     const interviews = await ctx.db.query("interviews").collect();
 
@@ -14,12 +14,12 @@ export const getAllInterviews = query({
 
 export const getMyInterviews = query({
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
+    // const identity = await ctx.auth.getUserIdentity();
+    // if (!identity) return [];
 
     const interviews = await ctx.db
       .query("interviews")
-      .withIndex("by_candidate_id", (q) => q.eq("candidateId", identity.subject))
+      // .withIndex("by_candidate_id", (q) => q.eq("candidateId", identity.subject))
       .collect();
 
     return interviews!;
@@ -47,8 +47,8 @@ export const createInterview = mutation({
     interviewerIds: v.array(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
+    // const identity = await ctx.auth.getUserIdentity();
+    // if (!identity) throw new Error("Unauthorized");
 
     return await ctx.db.insert("interviews", {
       ...args,

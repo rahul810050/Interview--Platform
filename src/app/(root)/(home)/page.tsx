@@ -15,7 +15,11 @@ import MeetingCard from "@/components/MeetingCard";
 export default function Home() {
   const router = useRouter();
   const { isInterviewer, isCandidate, isLoading } = useUserRole();
-  const { data: interviews, status } = useQuery(api.interviews.getMyInterviews);
+
+  const queryResult = useQuery(api.interviews.getMyInterviews);
+  const interviews = queryResult?.data ?? [];
+  const status = queryResult?.status ?? "loading";
+
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<"start" | "join">();
 
@@ -84,9 +88,9 @@ export default function Home() {
 
             {status === "success" && (
               <>
-                {interviews?.length > 0 ? (
+                {interviews.length > 0 ? (
                   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {interviews.map((interview) => (
+                    {interviews.map((interview: any) => (
                       <MeetingCard key={interview._id} interview={interview} />
                     ))}
                   </div>
